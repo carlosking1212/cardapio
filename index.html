@@ -17,7 +17,251 @@
 
         /* 2. CAMADA DE FUNDO INDEPENDENTE */
         .bg-fixo {
+            position: fixed;<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* AJUSTE DO COMPORTAMENTO DO BACKGROUND */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: white;
+            background: #000; /* Cor de fundo caso a imagem demore a carregar */
+        }
+
+        /* 🗝️ NOVA FORMA DE FIXAR O FUNDO (Evita o pulo no final da página) */
+        body::before {
+            content: "";
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('https://lh3.googleusercontent.com/d/1KXDrWcwSgJod3V7RtC6IesZm6o5apLhD');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Removemos o background-attachment: fixed daqui e usamos position: fixed no elemento */
+        }
+
+        .db35Fc {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        #menu-categorias {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 5px;
+        }
+
+        .nav-pills .nav-link {
+            color: #ccc;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .nav-pills .nav-link.clicado {
+            background-color: #ffe600 !important;
+            color: #000 !important;
+        }
+
+        .scrollspy-container {
+            padding: 10px;
+            padding-bottom: 110px;
+        }
+
+        .categoria-header {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            font-weight: 800;
+            color: #ffe600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin: 20px 0 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #ffe600;
+        }
+
+        .item-lista {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 12px;
+            background: rgba(255, 255, 255, 0.15);
+            margin-bottom: 4px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nome-produto {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 0;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .preco-produto {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4ade80;
+            margin: 2px 0 0 0;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .controles {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-acao {
+            background: #ffe600;
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .barra-flutuante {
+            position: fixed;
+            bottom: 20px;
+            left: 5%;
+            width: 90%;
+            background: #ffe600;
+            padding: 16px;
+            border-radius: 15px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="menu-categorias" class="navbar">
+        <ul class="nav nav-pills flex-nowrap overflow-x-auto w-100 px-2">
+            <li class="nav-item"><a class="nav-link clicado" href="#cat-coxinhas"
+                    onclick="ativarBotao(this)">Coxinhas</a></li>
+            <li class="nav-item"><a class="nav-link" href="#cat-hamburgueres"
+                    onclick="ativarBotao(this)">Hambúrgueres</a></li>
+            <li class="nav-item"><a class="nav-link" href="#cat-pizzas" onclick="ativarBotao(this)">Pizzas</a></li>
+            <li class="nav-item"><a class="nav-link" href="#cat-esfihas" onclick="ativarBotao(this)">Esfihas</a></li>
+        </ul>
+    </nav>
+
+    <div class="scrollspy-container">
+        <div id="cardapio-corpo"></div>
+    </div>
+
+    <button id="btn-finalizar" class="barra-flutuante" onclick="enviarWhatsApp()">
+        <div style="font-weight:800; color: #000;">VER SACOLA <span id="total-itens" class="badge bg-dark ms-1">0</span>
+        </div>
+        <div style="font-weight:900; color: #000;" id="total-preco">R$ 0,00</div>
+    </button>
+
+    <script>
+        function ativarBotao(elemento) {
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(l => l.classList.remove('clicado'));
+            elemento.classList.add('clicado');
+        }
+
+        const produtos = [
+            { cat: "Coxinhas", cid: "cat-coxinhas", nome: "Coxinha de Frango", preco: 8.00, qtd: 0 },
+            { cat: "Coxinhas", cid: "cat-coxinhas", nome: "Coxinha Frango c/ Catupiry", preco: 9.00, qtd: 0 },
+            { cat: "Coxinhas", cid: "cat-coxinhas", nome: "Coxinha de Carne Seca", preco: 10.00, qtd: 0 },
+            { cat: "Coxinhas", cid: "cat-coxinhas", nome: "Coxinha de Calabresa", preco: 8.50, qtd: 0 },
+            { cat: "Hambúrgueres", cid: "cat-hamburgueres", nome: "X-Burguer Clássico", preco: 18.00, qtd: 0 },
+            { cat: "Hambúrgueres", cid: "cat-hamburgueres", nome: "X-Salada Especial", preco: 20.00, qtd: 0 },
+            { cat: "Hambúrgueres", cid: "cat-hamburgueres", nome: "X-Bacon Turbo", preco: 25.00, qtd: 0 },
+            { cat: "Hambúrgueres", cid: "cat-hamburgueres", nome: "X-Tudo Lanchonete", preco: 32.00, qtd: 0 },
+            { cat: "Pizzas", cid: "cat-pizzas", nome: "Pizza Mussarela", preco: 58.00, qtd: 0 },
+            { cat: "Pizzas", cid: "cat-pizzas", nome: "Pizza Calabresa", preco: 60.00, qtd: 0 },
+            { cat: "Pizzas", cid: "cat-pizzas", nome: "Pizza Portuguesa", preco: 65.00, qtd: 0 },
+            { cat: "Pizzas", cid: "cat-pizzas", nome: "Pizza Frango c/ Bacon", preco: 68.00, qtd: 0 },
+            { cat: "Esfihas", cid: "cat-esfihas", nome: "Esfiha de Carne", preco: 6.00, qtd: 0 },
+            { cat: "Esfihas", cid: "cat-esfihas", nome: "Esfiha de Queijo", preco: 6.50, qtd: 0 },
+            { cat: "Esfihas", cid: "cat-esfihas", nome: "Esfiha de Frango", preco: 6.00, qtd: 0 },
+            { cat: "Esfihas", cid: "cat-esfihas", nome: "Esfiha de Escarola", preco: 7.00, qtd: 0 }
+        ];
+
+        function renderizar() {
+            const container = document.getElementById('cardapio-corpo');
+            let html = '';
+            let ultimaCat = '';
+            produtos.forEach((p, i) => {
+                if (p.cat !== ultimaCat) {
+                    html += `<div id="${p.cid}" class="categoria-header">${p.cat}</div>`;
+                    ultimaCat = p.cat;
+                }
+                html += `
+                <div class="item-lista">
+                    <div class="info-produto">
+                        <p class="nome-produto">${p.nome}</p>
+                        <p class="preco-produto">R$ ${p.preco.toLocaleString('pt-br', { minimumFractionDigits: 2 })}</p>
+                    </div>
+                    <div class="controles">
+                        ${p.qtd > 0 ? `<button class="btn-acao" onclick="alterar(${i}, -1)">-</button><span class="fw-bold px-2">${p.qtd}</span>` : ''}
+                        <button class="btn-acao" onclick="alterar(${i}, 1)">+</button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function alterar(i, delta) {
+            produtos[i].qtd += delta;
+            if (produtos[i].qtd < 0) produtos[i].qtd = 0;
+            renderizar();
+            atualizarSacola();
+        }
+
+        function atualizarSacola() {
+            let q = 0, v = 0;
+            produtos.forEach(p => { q += p.qtd; v += (p.qtd * p.preco); });
+            const btn = document.getElementById('btn-finalizar');
+            if (q > 0) {
+                btn.style.display = 'flex';
+                document.getElementById('total-itens').innerText = q;
+                document.getElementById('total-preco').innerText = `R$ ${v.toLocaleString('pt-br', { minimumFractionDigits: 2 })}`;
+            } else { btn.style.display = 'none'; }
+        }
+
+        function enviarWhatsApp() {
+            let msg = "🍔 *PEDIDO*%0A%0A";
+            produtos.forEach(p => { if (p.qtd > 0) { msg += `• ${p.qtd}x ${p.nome}%0A`; } });
+            window.open(`https://wa.me/5511949829608?text=${msg}`, '_blank');
+        }
+
+        renderizar();
+    </script>
+</body>
+
+</html>
             top: 0;
             left: 0;
             width: 100%;
