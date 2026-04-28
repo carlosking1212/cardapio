@@ -6,39 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* 1. TRAVA O CORPO PARA NÃO TER RESPIROS */
+        /* 1. RESET TOTAL */
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
-            min-height: 100%;
+            height: 100%;
             background-color: #000;
         }
 
-        /* 2. O SEGREDO: Camada de fundo com altura fixa e sem redimensionar */
-        body::before {
-            content: "";
+        /* 2. FIXAÇÃO DO FUNDO SEM "PULO" */
+        .fundo-fixo {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh; /* Trava na altura da janela atual */
+            width: 100%;
+            height: 100%;
             z-index: -1;
+            /* Usando o seu link de imagem */
             background-image: url('https://lh3.googleusercontent.com/d/1KXDrWcwSgJod3V7RtC6IesZm6o5apLhD');
             background-size: cover;
-            background-position: center center;
+            background-position: center;
             background-repeat: no-repeat;
-            /* Força o navegador a não recalcular a imagem no scroll */
-            will-change: transform; 
-            transform: translateZ(0);
         }
 
-        /* O resto do seu código continua igual daqui para baixo */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+        }
+
+        /* NAVBAR SEMI-TRANSPARENTE */
         #menu-categorias {
             position: sticky;
             top: 0;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.7) !important;
+            background: rgba(0, 0, 0, 0.8) !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding: 10px 5px;
         }
@@ -61,7 +63,7 @@
         }
 
         .categoria-header {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             padding: 8px 12px;
             font-weight: 800;
             color: #ffe600;
@@ -72,6 +74,7 @@
             border-left: 4px solid #ffe600;
         }
 
+        /* TRANSPARÊNCIA DOS ITENS */
         .item-lista {
             display: flex;
             justify-content: space-between;
@@ -85,27 +88,10 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .nome-produto {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #fff;
-            margin: 0;
-            text-shadow: 1px 1px 2px #000;
-        }
+        .nome-produto { font-size: 1rem; font-weight: 600; text-shadow: 1px 1px 2px #000; }
+        .preco-produto { font-size: 1.1rem; font-weight: 700; color: #4ade80; text-shadow: 1px 1px 2px #000; }
 
-        .preco-produto {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #4ade80;
-            margin: 2px 0 0 0;
-            text-shadow: 1px 1px 2px #000;
-        }
-
-        .controles {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .controles { display: flex; align-items: center; gap: 12px; }
 
         .btn-acao {
             background: #ffe600;
@@ -135,12 +121,13 @@
             align-items: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             z-index: 2000;
-            border: none;
         }
     </style>
 </head>
 
 <body>
+    <div class="fundo-fixo"></div>
+
     <nav id="menu-categorias" class="navbar">
         <ul class="nav nav-pills flex-nowrap overflow-x-auto w-100 px-2">
             <li class="nav-item"><a class="nav-link clicado" href="#cat-coxinhas" onclick="ativarBotao(this)">Coxinhas</a></li>
@@ -236,4 +223,5 @@
         renderizar();
     </script>
 </body>
+
 </html>
